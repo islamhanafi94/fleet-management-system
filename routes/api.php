@@ -33,10 +33,12 @@ Route::group([
     Route::get('/user-profile', [AuthController::class, 'userProfile']);    
 });
 
-
 Route::group([
     'middleware' => 'api.user',
     'prefix' => 'user'
+
 ], function ($router) {
     Route::get('/me',[UserController::class, 'index'] );
+    Route::post('/seats',[UserController::class, 'getAvailableSeats'] );
+    Route::post('/book',[UserController::class, 'book'] );
 });
