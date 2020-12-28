@@ -1,62 +1,213 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
+## Fleet Management App
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A Simple Bus booking system allownig passengers to book their ride from specific stations on a registered trip.
 
-## About Laravel
+# content
+1 - Running the project and configure dev environemnt
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+2 - getting authentication to use the APIs
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+3 - How to use the booking API
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
 
-## Learning Laravel
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## Running The project
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
 
-## Laravel Sponsors
+1 - **Getting project dependencies and packages**
+run this command  
+    
+    composer install
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
 
-### Premium Partners
+2 - **Config File ( .env )**
+```
+    cp .example.env .env
+``` 
+and then edit the database credential and db name as follows:
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/)**
-- **[OP.GG](https://op.gg)**
+```
+    DB_CONNECTION=mysql
+    DB_HOST=127.0.0.1
+    DB_PORT=3306
+    DB_DATABASE=??
+    DB_USERNAME=??
+    DB_PASSWORD=??
+```
+3 - **Generate Secret Key for JWT**
 
-## Contributing
+run this command  
+    
+     php artisan jwt:secret
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
 
-## Code of Conduct
+4 - **Load database from the given database.sql file**
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+run this command  
+    
+    mysql -u username -p fleet_system < database.sql
 
-## Security Vulnerabilities
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+5- **Running the project**
 
-## License
+    php artisan serve
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+
+## Authentication
+
+### 1- Registeration
+
+
+```http
+POST localhost:8000/api/auth/register
+```
+## Request Body
+
+```javascript
+{
+    "name" : "islam",
+    "email" : "islam3@islam.com",
+    "password": "123456",
+    "c_password": "123456"
+}
+```
+## Responses
+
+```javascript
+{
+    "message": "User successfully registered",
+    "user": {
+        "name": "islam",
+        "email": "islam3@islam.com",
+        "updated_at": "2020-12-28T05:51:15.000000Z",
+        "created_at": "2020-12-28T05:51:15.000000Z",
+        "id": 2
+    }
+}
+```
+<!-- 
+The `message` attribute contains a message commonly used to indicate errors or, in the case of deleting a resource, success that the resource was properly deleted.
+
+The `success` attribute describes if the transaction was successful or not.
+
+The `data` attribute contains any other metadata associated with the response. This will be an escaped string containing JSON data. -->
+
+## Status Codes
+
+
+| Status Code | Description | More
+| :--- | :--- | :--|
+| 201 | `CREATED` | when successfully create new user
+| 400 | `BAD REQUEST` | When failing due to inappropriate user input or a doublicated email
+
+
+### 2- Login
+
+
+```http
+POST localhost:8000/api/auth/login
+```
+## Request Body
+
+```javascript
+{
+    "email" : "islam3@islam.com",
+    "password": "123456",
+}
+```
+## Responses
+
+```javascript
+{
+    "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC8xMjcuMC4wLjE6ODAwMFwvYXBpXC9hdXRoXC9sb2dpbiIsImlhdCI6MTYwOTEzNTAxOCwiZXhwIjoxNjA5MTM4NjE4LCJuYmYiOjE2MDkxMzUwMTgsImp0aSI6InVCWGxvYmljanJQdkNHYnYiLCJzdWIiOjEsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjcifQW2qKQeslvQMuWXWOA5V0nE5ik-jbvwi4OGtFkquIGQQ" ,
+   
+   "token_type": "bearer",
+    "expires_in": 3600,
+    "user": {
+        "id": 1,
+        "name": "islam",
+        "email": "islam2@islam.com",
+        "email_verified_at": null,
+    }
+}
+```
+ 
+The `access_token` attribute contains the jwt for authenticate user for other requests.
+
+**Add the `access_token` to request header as a `bearer` token**
+
+----------
+
+### 3- Getting Available Seats
+
+
+```http
+POST localhost:8000/api/user/seats
+```
+## Request Body
+
+```javascript
+{
+    "trip_id": "1",
+    "from": "3",  // station_id
+    "to" : "5"    // station_id
+}
+```
+## Responses
+
+```javascript
+[
+    {
+        "id": 3,
+        "code": "S3"
+    },
+    {
+        "id": 4,
+        "code": "S4"
+    },
+    {
+        "id": 5,
+        "code": "S5"
+    }
+]
+```
+ 
+----------
+
+
+### 3- Booking a seat in trip
+
+
+```http
+POST localhost:8000/api/user/book
+```
+## Request Body
+
+```javascript
+{
+    "trip_id": "1",
+    "from": "3",
+    "to" : "5",
+    "seat_id" : "3"
+}
+```
+## Responses
+
+```javascript
+{
+    "id": "3",
+    "code": "S3",
+    "trip_id": "1",
+    "empty_at_station": "5"
+}
+```
+
+in case the requested seat is not available 
+
+```javascript
+
+{
+    "error": "Invalid Seat"
+}
+```
